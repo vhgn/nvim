@@ -15,35 +15,39 @@ vim.keymap.set("v", "<BS>j", ":diffget //3<CR>")
 ----------------------------------------
 -- Treesitter
 ----------------------------------------
-local treesitter_opts = {
-	ensured_installed = {
-		"bash",
-		"comment",
-		"css",
-		"html",
-		"javascript",
-		"jsdoc",
-		"jsonc",
-		"lua",
-		"markdown",
-		"regex",
-		"scss",
-		"toml",
-		"typescript",
-		"yaml",
-		"git_config",
-		"git_rebase",
-		"gitattributes",
-		"loca gitcommit",
-		"gitignore",
-	},
-	sync_install = false,
-	auto_install = true,
-	highlight = {
-		enable = true,
-		additional_vim_regex_highlighting = false,
-	},
-}
+local function treesitter_config()
+	local configs = require("nvim-treesitter.configs")
+
+	configs.setup({
+		ensured_installed = {
+			"bash",
+			"comment",
+			"css",
+			"html",
+			"javascript",
+			"jsdoc",
+			"jsonc",
+			"lua",
+			"markdown",
+			"regex",
+			"scss",
+			"toml",
+			"typescript",
+			"yaml",
+			"git_config",
+			"git_rebase",
+			"gitattributes",
+			"loca gitcommit",
+			"gitignore",
+		},
+		sync_install = false,
+		auto_install = true,
+		highlight = {
+			enable = true,
+			additional_vim_regex_highlighting = false,
+		},
+	})
+end
 
 ----------------------------------------
 -- GitSigns
@@ -160,7 +164,6 @@ local function live_command_config()
 		commands = {
 			Norm = {
 				cmd = "norm",
-				range = "",
 			},
 		}
 	}
@@ -232,6 +235,7 @@ vim.o.expandtab = false
 vim.o.tabstop = TAB_WIDTH
 vim.o.shiftwidth = TAB_WIDTH
 vim.o.shortmess = 'I'
+vim.o.autowriteall = true
 
 vim.opt.listchars = { tab = '>>', trail = '~', extends = '>', precedes = '<', space = '·' }
 vim.opt.list = false
@@ -322,7 +326,7 @@ local plugins = {
 	"lervag/vimtex",
 
 	-- languages
-	{ "nvim-treesitter/nvim-treesitter", opts = treesitter_opts, run = ":TSUpdate" },
+	{ "nvim-treesitter/nvim-treesitter", config = treesitter_config, build = ":TSUpdate" },
 	"nvim-treesitter/nvim-treesitter-context",
 
 	-- color theme
@@ -347,6 +351,13 @@ end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup(plugins)
 
+
+require "nvim-treesitter.configs".setup {
+	highlight = {
+		enable = true,
+		additional_vim_regex_highlighting = false,
+	},
+}
 
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', 'zf', builtin.find_files, {})
