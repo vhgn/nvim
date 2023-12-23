@@ -11,6 +11,8 @@ vim.keymap.set("v", "<BS>f", ":diffget //2<CR>")
 vim.keymap.set("n", "<BS>j", ":diffget //3<CR>")
 vim.keymap.set("v", "<BS>j", ":diffget //3<CR>")
 
+vim.keymap.set("v", "<C-y>", '"*y')
+vim.keymap.set("n", "<C-y>", 'y"*y')
 
 ----------------------------------------
 -- Treesitter
@@ -37,7 +39,7 @@ local function treesitter_config()
 			"git_config",
 			"git_rebase",
 			"gitattributes",
-			"loca gitcommit",
+			"gitcommit",
 			"gitignore",
 		},
 		sync_install = false,
@@ -188,6 +190,7 @@ local telescope_opts = {
 	pickers = {
 		find_files = {
 			theme = "dropdown",
+			find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
 		},
 		live_grep = {
 			theme = "dropdown",
@@ -257,17 +260,17 @@ vim.opt.fillchars = {
 }
 
 -- Quickfix
-vim.keymap.set("n", "<C-j>", ":cnext<CR>", { silent = true })
-vim.keymap.set("n", "<C-k>", ":cprev<CR>", { silent = true })
-vim.keymap.set("n", "<C-l>", ":cclose<CR>", { silent = true })
+vim.keymap.set("n", "zlj", ":cnext<CR>", { silent = true })
+vim.keymap.set("n", "zlk", ":cprev<CR>", { silent = true })
+vim.keymap.set("n", "zll", ":cclose<CR>", { silent = true })
 
 -- Map Control C to Escape
 vim.keymap.set("n", "<C-c>", "<Esc>", { silent = true })
 vim.keymap.set("i", "<C-c>", "<Esc>", { silent = true })
 vim.keymap.set("v", "<C-c>", "<Esc>", { silent = true })
-vim.keymap.set("x", "<C-c>", "<Esc>", { silent = true })
-vim.keymap.set("o", "<C-c>", "<Esc>", { silent = true })
-vim.keymap.set("c", "<C-c>", "<Esc>", { silent = true })
+-- vim.keymap.set("x", "<C-c>", "<Esc>", { silent = true })
+-- vim.keymap.set("o", "<C-c>", "<Esc>", { silent = true })
+-- vim.keymap.set("c", "<C-c>", "<Esc>", { silent = true })
 
 -- Autosave on fucus lost
 vim.api.nvim_create_autocmd("FocusLost", {
@@ -324,6 +327,23 @@ local plugins = {
 	{ "rest-nvim/rest.nvim",             opts = rest_nvim_opts },
 	"nvim-lua/plenary.nvim",
 	"lervag/vimtex",
+	{
+		'kristijanhusak/vim-dadbod-ui',
+		dependencies = {
+			-- { 'tpope/vim-dadbod',                     lazy = true },
+			{ 'kristijanhusak/vim-dadbod-completion', ft = { 'sql', 'mysql', 'plsql' }, lazy = true },
+		},
+		cmd = {
+			'DBUI',
+			'DBUIToggle',
+			'DBUIAddConnection',
+			'DBUIFindBuffer',
+		},
+		init = function()
+			-- Your DBUI configuration
+			vim.g.db_ui_use_nerd_fonts = 1
+		end,
+	},
 
 	-- languages
 	{ "nvim-treesitter/nvim-treesitter", config = treesitter_config, build = ":TSUpdate" },
@@ -372,10 +392,9 @@ local harpoon_ui = require("harpoon.ui")
 local harpoon_mark = require("harpoon.mark")
 
 vim.keymap.set('n', 'mv', harpoon_ui.toggle_quick_menu, {})
-vim.keymap.set('n', 'mf', function() harpoon_ui.nav_file(1) end, {})
-vim.keymap.set('n', 'md', function() harpoon_ui.nav_file(2) end, {})
-vim.keymap.set('n', 'ms', function() harpoon_ui.nav_file(3) end, {})
-vim.keymap.set('n', 'ma', function() harpoon_ui.nav_file(4) end, {})
+vim.keymap.set('n', '<C-j>', function() harpoon_ui.nav_file(1) end, {})
+vim.keymap.set('n', '<C-k>', function() harpoon_ui.nav_file(2) end, {})
+vim.keymap.set('n', '<C-l>', function() harpoon_ui.nav_file(3) end, {})
 vim.keymap.set('n', 'mc', harpoon_mark.add_file, {})
 
 ----------------------------------------
@@ -415,7 +434,7 @@ local kind_icons = {
 cmp.setup({
 	formatting = {
 		format = function(entry, vim_item)
-			-- This concatonates the icons with the name of the item kind
+			-- This concatenates the icons with the name of the item kind
 			-- vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)
 			vim_item.kind = kind_icons[vim_item.kind]
 
