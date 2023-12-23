@@ -260,9 +260,9 @@ vim.opt.fillchars = {
 }
 
 -- Quickfix
-vim.keymap.set("n", "zlj", ":cnext<CR>", { silent = true })
-vim.keymap.set("n", "zlk", ":cprev<CR>", { silent = true })
-vim.keymap.set("n", "zll", ":cclose<CR>", { silent = true })
+vim.keymap.set("n", "zj", ":cnext<CR>", { silent = true })
+vim.keymap.set("n", "zk", ":cprev<CR>", { silent = true })
+vim.keymap.set("n", "zl", ":cclose<CR>", { silent = true })
 
 -- Map Control C to Escape
 vim.keymap.set("n", "<C-c>", "<Esc>", { silent = true })
