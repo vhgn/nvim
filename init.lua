@@ -55,43 +55,43 @@ end
 -- GitSigns
 ----------------------------------------
 local gitsigns_opts = {
-	signs                        = {
-		add          = { text = '+' },
-		change       = { text = '~' },
-		delete       = { text = 'x' },
-		topdelete    = { text = 'X' },
-		changedelete = { text = '~' },
-		untracked    = { text = '*' },
+	signs = {
+		add = { text = "+" },
+		change = { text = "~" },
+		delete = { text = "x" },
+		topdelete = { text = "X" },
+		changedelete = { text = "~" },
+		untracked = { text = "*" },
 	},
-	signcolumn                   = true,
-	numhl                        = false,
-	linehl                       = false,
-	word_diff                    = false,
-	watch_gitdir                 = {
-		follow_files = true
+	signcolumn = true,
+	numhl = false,
+	linehl = false,
+	word_diff = false,
+	watch_gitdir = {
+		follow_files = true,
 	},
-	attach_to_untracked          = true,
-	current_line_blame           = false,
-	current_line_blame_opts      = {
+	attach_to_untracked = true,
+	current_line_blame = false,
+	current_line_blame_opts = {
 		virt_text = true,
-		virt_text_pos = 'eol',
+		virt_text_pos = "eol",
 		delay = 1000,
 		ignore_whitespace = false,
 	},
-	current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
-	sign_priority                = 6,
-	update_debounce              = 100,
-	status_formatter             = nil,
-	max_file_length              = 40000,
-	preview_config               = {
-		border = 'single',
-		style = 'minimal',
-		relative = 'cursor',
+	current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",
+	sign_priority = 6,
+	update_debounce = 100,
+	status_formatter = nil,
+	max_file_length = 40000,
+	preview_config = {
+		border = "single",
+		style = "minimal",
+		relative = "cursor",
 		row = 0,
-		col = 1
+		col = 1,
 	},
-	yadm                         = {
-		enable = false
+	yadm = {
+		enable = false,
 	},
 }
 
@@ -117,7 +117,7 @@ local rest_nvim_opts = {
 		},
 	},
 	jump_to_request = true,
-	env_file = '.env',
+	env_file = ".env",
 	custom_dynamic_variables = {},
 	yank_dry_run = true,
 }
@@ -135,9 +135,11 @@ local lualine_opts = {
 	sections = {
 		lualine_a = {
 			{
-				'mode',
-				fmt = function(str) return str:sub(1, 1) end
-			}
+				"mode",
+				fmt = function(str)
+					return str:sub(1, 1)
+				end,
+			},
 		},
 		lualine_b = {
 			"branch",
@@ -148,8 +150,8 @@ local lualine_opts = {
 			{
 				"filename",
 				file_status = true,
-				path = 2
-			}
+				path = 2,
+			},
 		},
 		lualine_z = {},
 		lualine_y = {},
@@ -162,13 +164,13 @@ local lualine_opts = {
 -- Livecommand
 ----------------------------------------
 local function live_command_config()
-	require "live-command".setup {
+	require("live-command").setup({
 		commands = {
 			Norm = {
 				cmd = "norm",
 			},
-		}
-	}
+		},
+	})
 end
 
 ----------------------------------------
@@ -228,7 +230,7 @@ end
 vim.opt.showmode = false
 vim.opt.scrolloff = 8
 
-vim.g.mapleader = ' '
+vim.g.mapleader = " "
 
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -237,26 +239,26 @@ local TAB_WIDTH = 4
 vim.o.expandtab = false
 vim.o.tabstop = TAB_WIDTH
 vim.o.shiftwidth = TAB_WIDTH
-vim.o.shortmess = 'I'
+vim.o.shortmess = "I"
 vim.o.autowriteall = true
 
-vim.opt.listchars = { tab = '>>', trail = '~', extends = '>', precedes = '<', space = '·' }
+vim.opt.listchars = { tab = ">>", trail = "~", extends = ">", precedes = "<", space = "·" }
 vim.opt.list = false
 vim.opt.autoread = true
-vim.opt.signcolumn = 'yes'
+vim.opt.signcolumn = "yes"
 vim.opt.cursorline = true
 
 vim.g.moonflyVirtualTextColor = true
 vim.g.moonflyUnderlineMatchParen = true
 vim.g.moonflyWinSeparator = 2
 vim.opt.fillchars = {
-	horiz = '━',
-	horizup = '┻',
-	horizdown = '┳',
-	vert = '┃',
-	vertleft = '┫',
-	vertright = '┣',
-	verthoriz = '╋',
+	horiz = "━",
+	horizup = "┻",
+	horizdown = "┳",
+	vert = "┃",
+	vertleft = "┫",
+	vertright = "┣",
+	verthoriz = "╋",
 }
 
 -- Quickfix
@@ -277,7 +279,6 @@ vim.api.nvim_create_autocmd("FocusLost", {
 	pattern = "*",
 	command = "silent! wa",
 })
-
 
 --------------------------------------
 -- Plugins
@@ -310,9 +311,9 @@ local plugins = {
 					null_ls.builtins.diagnostics.eslint,
 					null_ls.builtins.formatting.prettier,
 					null_ls.builtins.completion.spell,
-				}
+				},
 			})
-		end
+		end,
 	},
 
 	-- version control
@@ -343,16 +344,16 @@ local plugins = {
 	"nvim-lua/plenary.nvim",
 	"lervag/vimtex",
 	{
-		'kristijanhusak/vim-dadbod-ui',
+		"kristijanhusak/vim-dadbod-ui",
 		dependencies = {
 			-- { 'tpope/vim-dadbod',                     lazy = true },
-			{ 'kristijanhusak/vim-dadbod-completion', ft = { 'sql', 'mysql', 'plsql' }, lazy = true },
+			{ "kristijanhusak/vim-dadbod-completion", ft = { "sql", "mysql", "plsql" }, lazy = true },
 		},
 		cmd = {
-			'DBUI',
-			'DBUIToggle',
-			'DBUIAddConnection',
-			'DBUIFindBuffer',
+			"DBUI",
+			"DBUIToggle",
+			"DBUIAddConnection",
+			"DBUIFindBuffer",
 		},
 		init = function()
 			-- Your DBUI configuration
@@ -386,64 +387,69 @@ end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup(plugins)
 
-
-require "nvim-treesitter.configs".setup {
+require("nvim-treesitter.configs").setup({
 	highlight = {
 		enable = true,
 		additional_vim_regex_highlighting = false,
 	},
-}
+})
 
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', 'zf', builtin.find_files, {})
-vim.keymap.set('n', 'zg', builtin.live_grep, {})
-vim.keymap.set('n', 'zd', builtin.quickfix, {})
-vim.keymap.set('n', 'zx', builtin.commands, {})
-vim.keymap.set('n', 'zs', builtin.lsp_dynamic_workspace_symbols, {})
-vim.keymap.set('n', 'zb', builtin.git_branches, {})
-vim.keymap.set('n', 'zc', builtin.current_buffer_fuzzy_find, {})
+local builtin = require("telescope.builtin")
+vim.keymap.set("n", "zf", builtin.find_files, {})
+vim.keymap.set("n", "zg", builtin.live_grep, {})
+vim.keymap.set("n", "zd", builtin.quickfix, {})
+vim.keymap.set("n", "zx", builtin.commands, {})
+vim.keymap.set("n", "zs", builtin.lsp_dynamic_workspace_symbols, {})
+vim.keymap.set("n", "zb", builtin.git_branches, {})
+vim.keymap.set("n", "zc", builtin.current_buffer_fuzzy_find, {})
 
 local harpoon_ui = require("harpoon.ui")
 local harpoon_mark = require("harpoon.mark")
 
-vim.keymap.set('n', 'mv', harpoon_ui.toggle_quick_menu, {})
-vim.keymap.set('n', '<C-j>', function() harpoon_ui.nav_file(1) end, {})
-vim.keymap.set('n', '<C-k>', function() harpoon_ui.nav_file(2) end, {})
-vim.keymap.set('n', '<C-l>', function() harpoon_ui.nav_file(3) end, {})
-vim.keymap.set('n', 'mc', harpoon_mark.add_file, {})
+vim.keymap.set("n", "mv", harpoon_ui.toggle_quick_menu, {})
+vim.keymap.set("n", "<C-j>", function()
+	harpoon_ui.nav_file(1)
+end, {})
+vim.keymap.set("n", "<C-k>", function()
+	harpoon_ui.nav_file(2)
+end, {})
+vim.keymap.set("n", "<C-l>", function()
+	harpoon_ui.nav_file(3)
+end, {})
+vim.keymap.set("n", "mc", harpoon_mark.add_file, {})
 
 ----------------------------------------
 -- LSP
 ----------------------------------------
-local cmp = require('cmp')
-local luasnip = require('luasnip')
+local cmp = require("cmp")
+local luasnip = require("luasnip")
 
 local kind_icons = {
-	Text = '...',
-	Method = 'M()',
-	Function = 'f()',
-	Constructor = 'New',
-	Field = '[f]',
-	Variable = 'var',
-	Class = 'C{}',
-	Interface = 'I{}',
-	Module = '[M]',
-	Property = '(p)',
-	Unit = 'un.',
-	Value = '123',
-	Enum = 'E{}',
-	Keyword = 'key',
-	Snippet = '</>',
-	Color = 'rgb',
-	File = '<f>',
-	Reference = '& r',
-	Folder = '<d>',
-	EnumMember = 'E.B',
-	Constant = 'VAR',
-	Struct = 'S{}',
-	Event = '*ev',
-	Operator = '+-=',
-	TypeParameter = '<T>'
+	Text = "...",
+	Method = "M()",
+	Function = "f()",
+	Constructor = "New",
+	Field = "[f]",
+	Variable = "var",
+	Class = "C{}",
+	Interface = "I{}",
+	Module = "[M]",
+	Property = "(p)",
+	Unit = "un.",
+	Value = "123",
+	Enum = "E{}",
+	Keyword = "key",
+	Snippet = "</>",
+	Color = "rgb",
+	File = "<f>",
+	Reference = "& r",
+	Folder = "<d>",
+	EnumMember = "E.B",
+	Constant = "VAR",
+	Struct = "S{}",
+	Event = "*ev",
+	Operator = "+-=",
+	TypeParameter = "<T>",
 }
 
 cmp.setup({
@@ -454,14 +460,14 @@ cmp.setup({
 			vim_item.kind = kind_icons[vim_item.kind]
 
 			vim_item.menu = ({
-				buffer = '[buf]',
-				nvim_lsp = '[lsp]',
-				luasnip = '[snp]',
-				nvim_lua = '[lua]',
-				latex_symbols = '[tex]',
+				buffer = "[buf]",
+				nvim_lsp = "[lsp]",
+				luasnip = "[snp]",
+				nvim_lua = "[lua]",
+				latex_symbols = "[tex]",
 			})[entry.source.name]
 			return vim_item
-		end
+		end,
 	},
 	snippet = {
 		expand = function(args)
@@ -473,70 +479,70 @@ cmp.setup({
 		documentation = cmp.config.window.bordered(),
 	},
 	mapping = cmp.mapping.preset.insert({
-		['<C-b>'] = cmp.mapping.scroll_docs(-4),
-		['<C-f>'] = cmp.mapping.scroll_docs(4),
-		['<C-Space>'] = cmp.mapping.complete(),
-		['<C-p>'] = cmp.mapping.select_prev_item(),
-		['<C-n>'] = cmp.mapping.select_next_item(),
-		['<C-e>'] = cmp.mapping.abort(),
-		['<CR>'] = cmp.mapping.confirm({ select = false }),
+		["<C-b>"] = cmp.mapping.scroll_docs(-4),
+		["<C-f>"] = cmp.mapping.scroll_docs(4),
+		["<C-Space>"] = cmp.mapping.complete(),
+		["<C-p>"] = cmp.mapping.select_prev_item(),
+		["<C-n>"] = cmp.mapping.select_next_item(),
+		["<C-e>"] = cmp.mapping.abort(),
+		["<CR>"] = cmp.mapping.confirm({ select = false }),
 	}),
 	sources = cmp.config.sources({
-		{ name = 'nvim_lsp' },
-		{ name = 'luasnip' },
+		{ name = "nvim_lsp" },
+		{ name = "luasnip" },
 	}, {
-		{ name = 'buffer' },
-	})
+		{ name = "buffer" },
+	}),
 })
 
-cmp.setup.cmdline({ '/', '?' }, {
+cmp.setup.cmdline({ "/", "?" }, {
 	mapping = cmp.mapping.preset.cmdline(),
 	sources = {
-		{ name = 'buffer' }
-	}
+		{ name = "buffer" },
+	},
 })
 
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 local opts = { noremap = true, silent = true }
-vim.keymap.set('n', '[D', vim.diagnostic.open_float, opts)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+vim.keymap.set("n", "[D", vim.diagnostic.open_float, opts)
+vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 
 local on_attach = function(client, bufnr)
 	-- Change later
 	-- See `:help vim.lsp.*` for documentation on any of the below functions
 	local bufopts = { noremap = true, silent = false, buffer = bufnr }
-	vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-	vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-	vim.keymap.set('n', 'gh', vim.lsp.buf.signature_help, bufopts)
-	vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
+	vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
+	vim.keymap.set("n", "gh", vim.lsp.buf.signature_help, bufopts)
+	vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, bufopts)
 
 	vim.keymap.set("n", "gr", function()
 		return ":IncRename " .. vim.fn.expand("<cword>")
 	end, { expr = true })
-	vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, bufopts)
-	vim.keymap.set('n', 'ge', vim.lsp.buf.references, bufopts)
-	vim.keymap.set('n', 'gj', vim.lsp.buf.rename, bufopts)
-	vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-	vim.keymap.set('n', '<2-LeftMouse>', vim.lsp.buf.definition, bufopts)
+	vim.keymap.set("n", "ga", vim.lsp.buf.code_action, bufopts)
+	vim.keymap.set("n", "ge", vim.lsp.buf.references, bufopts)
+	vim.keymap.set("n", "gj", vim.lsp.buf.rename, bufopts)
+	vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
+	vim.keymap.set("n", "<2-LeftMouse>", vim.lsp.buf.definition, bufopts)
 
-	vim.keymap.set('n', '#', vim.lsp.buf.format, bufopts)
-	vim.keymap.set('v', '#', vim.lsp.buf.format, bufopts)
+	vim.keymap.set("n", "#", vim.lsp.buf.format, bufopts)
+	vim.keymap.set("v", "#", vim.lsp.buf.format, bufopts)
 end
 
-require('mason').setup()
-require('mason-lspconfig').setup()
-require('mason-lspconfig').setup_handlers({
+require("mason").setup()
+require("mason-lspconfig").setup()
+require("mason-lspconfig").setup_handlers({
 	function(server_name)
-		require('lspconfig')[server_name].setup {
+		require("lspconfig")[server_name].setup({
 			on_attach = on_attach,
 			capabilities = capabilities,
-		}
+		})
 	end,
 })
 
-require('lspconfig').tailwindcss.setup {
+require("lspconfig").tailwindcss.setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
 	filetypes = {
@@ -559,7 +565,7 @@ require('lspconfig').tailwindcss.setup {
 			heex = "html-eex",
 		},
 	},
-}
+})
 
 vim.fn.sign_define("DiagnosticSignError", { text = "e", texthl = "DiagnosticSignError", numhl = "DiagnosticSignError" })
 vim.fn.sign_define("DiagnosticSignWarn", { text = "w", texthl = "DiagnosticSignWarn", numhl = "DiagnosticSignWarn" })
@@ -567,28 +573,24 @@ vim.fn.sign_define("DiagnosticSignHint", { text = "?", texthl = "DiagnosticSignH
 vim.fn.sign_define("DiagnosticSignInfo", { text = "i", texthl = "DiagnosticSignInfo", numhl = "DiagnosticSignInfo" })
 
 vim.diagnostic.config({
-	virtual_text = { prefix = '', spacing = 10 },
+	virtual_text = { prefix = "", spacing = 10 },
 	severity_sort = true,
 	float = {
-		source = 'always',
+		source = "always",
 	},
 })
 
 -- add border to lsp float windows
-local _border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' }
+local _border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }
 
-vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
-	vim.lsp.handlers.hover, {
-		border = _border
-	}
-)
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+	border = _border,
+})
 
-vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
-	vim.lsp.handlers.signature_help, {
-		border = _border
-	}
-)
+vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+	border = _border,
+})
 
-vim.diagnostic.config {
-	float = { border = _border }
-}
+vim.diagnostic.config({
+	float = { border = _border },
+})
