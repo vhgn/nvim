@@ -286,7 +286,12 @@ vim.api.nvim_create_autocmd("FocusLost", {
 local plugins = {
 	"williamboman/mason.nvim",
 	"williamboman/mason-lspconfig.nvim",
-	"neovim/nvim-lspconfig",
+	{
+		"neovim/nvim-lspconfig",
+		opts = {
+			format = { timeout_ms = 1000 }
+		}
+	},
 
 	"hrsh7th/cmp-nvim-lsp",
 	"hrsh7th/cmp-buffer",
