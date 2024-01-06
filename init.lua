@@ -315,6 +315,7 @@ local plugins = {
 			})
 		end,
 	},
+	"j-hui/fidget.nvim",
 
 	-- version control
 	{ "lewis6991/gitsigns.nvim",       opts = gitsigns_opts },
@@ -512,23 +513,24 @@ vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 local on_attach = function(client, bufnr)
 	-- Change later
 	-- See `:help vim.lsp.*` for documentation on any of the below functions
-	local bufopts = { noremap = true, silent = false, buffer = bufnr }
-	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
-	vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-	vim.keymap.set("n", "gh", vim.lsp.buf.signature_help, bufopts)
-	vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, bufopts)
+	local opts = { noremap = true, silent = false, buffer = bufnr }
+	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+	vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+	vim.keymap.set("n", "gh", vim.lsp.buf.signature_help, opts)
+	vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, opts)
+
+	vim.keymap.set("n", "zq", vim.diagnostic.setqflist, opts)
 
 	vim.keymap.set("n", "gr", function()
 		return ":IncRename " .. vim.fn.expand("<cword>")
 	end, { expr = true })
-	vim.keymap.set("n", "ga", vim.lsp.buf.code_action, bufopts)
-	vim.keymap.set("n", "ge", vim.lsp.buf.references, bufopts)
-	vim.keymap.set("n", "gj", vim.lsp.buf.rename, bufopts)
-	vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
-	vim.keymap.set("n", "<2-LeftMouse>", vim.lsp.buf.definition, bufopts)
+	vim.keymap.set("n", "ga", vim.lsp.buf.code_action, opts)
+	vim.keymap.set("n", "ge", vim.lsp.buf.references, opts)
+	vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+	vim.keymap.set("n", "<2-LeftMouse>", vim.lsp.buf.definition, opts)
 
-	vim.keymap.set("n", "#", vim.lsp.buf.format, bufopts)
-	vim.keymap.set("v", "#", vim.lsp.buf.format, bufopts)
+	vim.keymap.set("n", "#", vim.lsp.buf.format, opts)
+	vim.keymap.set("v", "#", vim.lsp.buf.format, opts)
 end
 
 require("mason").setup()
@@ -539,6 +541,18 @@ require("mason-lspconfig").setup_handlers({
 			on_attach = on_attach,
 			capabilities = capabilities,
 		})
+	end,
+	["lua_ls"] = function()
+		local lspconfig = require("lspconfig")
+		lspconfig.lua_ls.setup {
+			settings = {
+				Lua = {
+					diagnostics = {
+						globals = { "vim" }
+					}
+				}
+			}
+		}
 	end,
 })
 
