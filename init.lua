@@ -266,14 +266,6 @@ vim.keymap.set("n", "zj", ":cnext<CR>", { silent = true })
 vim.keymap.set("n", "zk", ":cprev<CR>", { silent = true })
 vim.keymap.set("n", "zl", ":cclose<CR>", { silent = true })
 
--- Map Control C to Escape
-vim.keymap.set("n", "<C-c>", "<Esc>", { silent = true })
-vim.keymap.set("i", "<C-c>", "<Esc>", { silent = true })
-vim.keymap.set("v", "<C-c>", "<Esc>", { silent = true })
--- vim.keymap.set("x", "<C-c>", "<Esc>", { silent = true })
--- vim.keymap.set("o", "<C-c>", "<Esc>", { silent = true })
--- vim.keymap.set("c", "<C-c>", "<Esc>", { silent = true })
-
 -- Autosave on fucus lost
 vim.api.nvim_create_autocmd("FocusLost", {
 	pattern = "*",
