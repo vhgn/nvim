@@ -1,8 +1,6 @@
 ----------------------------------------
 -- Random
 ----------------------------------------
-vim.keymap.set("n", "gj", "<Plug>RestNvim")
-
 vim.keymap.set("n", "<BS><BS>", ":below G<CR>")
 vim.keymap.set("v", "<BS><BS>", ":below G<CR>")
 
@@ -93,33 +91,6 @@ local gitsigns_opts = {
 	yadm = {
 		enable = false,
 	},
-}
-
-----------------------------------------
--- RestNvim
-----------------------------------------
-local rest_nvim_opts = {
-	result_split_horizontal = false,
-	result_split_in_place = true,
-	skip_ssl_verification = false,
-	encode_url = true,
-	highlight = {
-		enabled = true,
-		timeout = 150,
-	},
-	result = {
-		show_url = true,
-		show_http_info = true,
-		show_headers = true,
-		formatters = {
-			json = "jq",
-			html = "tidy -i -q -",
-		},
-	},
-	jump_to_request = true,
-	env_file = ".env",
-	custom_dynamic_variables = {},
-	yank_dry_run = true,
 }
 
 ----------------------------------------
@@ -333,9 +304,7 @@ local plugins = {
 	{ "smjonas/live-command.nvim", config = live_command_config },
 	"ThePrimeagen/vim-be-good",
 	"github/copilot.vim",
-	{ "rest-nvim/rest.nvim",             opts = rest_nvim_opts },
 	"nvim-lua/plenary.nvim",
-	"lervag/vimtex",
 	{
 		"kristijanhusak/vim-dadbod-ui",
 		dependencies = {
