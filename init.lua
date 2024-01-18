@@ -496,8 +496,8 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 	vim.keymap.set("n", "<2-LeftMouse>", vim.lsp.buf.definition, opts)
 
-	vim.keymap.set("n", "#", vim.lsp.buf.format, opts)
-	vim.keymap.set("v", "#", vim.lsp.buf.format, opts)
+	vim.keymap.set("n", "#", function() vim.lsp.buf.format({ timeout_ms = 3000 }) end, opts)
+	vim.keymap.set("v", "#", function() vim.lsp.buf.format({ timeout_ms = 3000 }) end, opts)
 end
 
 require("mason").setup()
