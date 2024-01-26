@@ -12,6 +12,8 @@ vim.keymap.set("v", "<BS>j", ":diffget //3<CR>")
 vim.keymap.set("v", "<C-y>", '"*y')
 vim.keymap.set("n", "<C-y>", 'y"*y')
 
+vim.keymap.set("n", "<C-;>", ":noh<CR>")
+
 vim.filetype.add({
 	extension = {
 		livemd = "markdown",
