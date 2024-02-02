@@ -199,6 +199,7 @@ local telescope_opts = {
 local function moonfly_init()
 	vim.cmd("colorscheme moonfly")
 	vim.cmd("hi clear MoonflyTurquoise")
+	vim.cmd("hi TreesitterContext guibg=#222222")
 end
 
 --------------------------------------
