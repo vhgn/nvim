@@ -287,6 +287,7 @@ local plugins = {
 					-- null_ls.builtins.formatting.stylua,
 					-- null_ls.builtins.diagnostics.eslint,
 					null_ls.builtins.formatting.prettier,
+					null_ls.builtins.formatting.isort,
 					null_ls.builtins.formatting.black,
 				},
 			})
@@ -343,7 +344,6 @@ local plugins = {
 
 	-- color theme
 	{ "bluz71/vim-moonfly-colors", init = moonfly_init, name = "moonfly", lazy = false, priority = 1000 },
-	"folke/lsp-colors.nvim",
 }
 
 ----------------------------------------
