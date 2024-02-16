@@ -271,6 +271,13 @@ local plugins = {
 	"hrsh7th/cmp-cmdline",
 	"hrsh7th/nvim-cmp",
 
+	-- Neovim autocompletion
+	"folke/neodev.nvim",
+	"mfussenegger/nvim-dap",
+	"rcarriga/nvim-dap-ui",
+	"jay-babu/mason-nvim-dap.nvim",
+
+
 	{
 		"smjonas/inc-rename.nvim",
 		opts = inc_rename_opts,
@@ -509,6 +516,25 @@ local on_attach = function(client, bufnr)
 end
 
 require("mason").setup()
+require("mason-nvim-dap").setup({
+    ensure_installed = { "python", "delve" },
+	handlers = {},
+})
+
+local dap = require("dap")
+dap.configurations.python = {
+  {
+	type = "python";
+	request = "launch";
+	name = "Launch file";
+	program = "${file}";
+	pythonPath = function()
+	  return "/opt/homebrew/bin/python3"
+	end;
+  },
+}
+require("dapui").setup()
+
 require("mason-lspconfig").setup()
 require("mason-lspconfig").setup_handlers({
 	function(server_name)
