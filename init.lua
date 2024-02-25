@@ -522,6 +522,16 @@ require("mason-nvim-dap").setup({
 })
 
 local dap = require("dap")
+vim.cmd[[highlight DapBreakpoint ctermbg=0 guifg=0 guibg=#002200]]
+vim.cmd[[highlight DapLogPoint ctermbg=0 guifg=0 guibg=#000022]]
+vim.cmd[[highlight DapStopped ctermbg=0 guifg=0 guibg=#220000]]
+
+vim.fn.sign_define("DapBreakpoint", { text=">", texthl="DapBreakpoint", linehl="DapBreakpoint", numhl="DapBreakpoint" })
+vim.fn.sign_define("DapBreakpointCondition", { text="=", texthl="DapBreakpoint", linehl="DapBreakpoint", numhl="DapBreakpoint" })
+vim.fn.sign_define("DapBreakpointRejected", { text="!", texthl="DapBreakpoint", linehl="DapBreakpoint", numhl= "DapBreakpoint" })
+vim.fn.sign_define("DapLogPoint", { text="L", texthl="DapLogPoint", linehl="DapLogPoint", numhl= "DapLogPoint" })
+vim.fn.sign_define("DapStopped", { text="S", texthl="DapStopped", linehl="DapStopped", numhl= "DapStopped" })
+
 dap.configurations.python = {
   {
 	type = "python";
@@ -556,6 +566,16 @@ require("mason-lspconfig").setup_handlers({
 		}
 	end,
 })
+
+
+require"lspconfig".dartls.setup{
+	cmd = { "dart", "language-server", "--protocol=lsp" },
+	on_attach = on_attach,
+	capabilities = capabilities,
+	filetypes = {
+		"dart",
+	},
+}
 
 require("lspconfig").tailwindcss.setup({
 	on_attach = on_attach,
@@ -607,5 +627,4 @@ vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.s
 })
 
 vim.diagnostic.config({
-	float = { border = _border },
-})
+	float = { border = _border }, })
