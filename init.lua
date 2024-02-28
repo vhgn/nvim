@@ -276,7 +276,7 @@ local plugins = {
 	"mfussenegger/nvim-dap",
 	"rcarriga/nvim-dap-ui",
 	"jay-babu/mason-nvim-dap.nvim",
-
+	"aznhe21/actions-preview.nvim",
 
 	{
 		"smjonas/inc-rename.nvim",
@@ -506,7 +506,7 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set("n", "gr", function()
 		return ":IncRename " .. vim.fn.expand("<cword>")
 	end, { expr = true })
-	vim.keymap.set("n", "ga", vim.lsp.buf.code_action, opts)
+	vim.keymap.set({ "v", "n" }, "ga", require("actions-preview").code_actions)
 	vim.keymap.set("n", "ge", vim.lsp.buf.references, opts)
 	vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 	vim.keymap.set("n", "<2-LeftMouse>", vim.lsp.buf.definition, opts)
