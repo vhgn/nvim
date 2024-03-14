@@ -13,6 +13,7 @@ vim.keymap.set("v", "<C-y>", '"*y')
 vim.keymap.set("n", "<C-y>", 'y"*y')
 
 vim.keymap.set("n", "<C-;>", ":noh<CR>")
+vim.keymap.set("n", "<C-'>", ":sp<CR>:term<CR>ipython3<CR>")
 
 vim.filetype.add({
 	extension = {
