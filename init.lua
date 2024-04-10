@@ -326,7 +326,6 @@ local plugins = {
 	-- tools
 	{ "smjonas/live-command.nvim", config = live_command_config },
 	"ThePrimeagen/vim-be-good",
-	"github/copilot.vim",
 	"nvim-lua/plenary.nvim",
 	{
 		"kristijanhusak/vim-dadbod-ui",
@@ -544,7 +543,7 @@ dap.configurations.python = {
 	end;
   },
 }
-require("dapui").setup()
+-- require("dapui").setup()
 
 require("mason-lspconfig").setup()
 require("mason-lspconfig").setup_handlers({
