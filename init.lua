@@ -252,6 +252,9 @@ vim.keymap.set("n", "zj", ":cnext<CR>", { silent = true })
 vim.keymap.set("n", "zk", ":cprev<CR>", { silent = true })
 vim.keymap.set("n", "zl", ":cclose<CR>", { silent = true })
 
+-- File Explorer
+vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+
 -- Autosave on fucus lost
 vim.api.nvim_create_autocmd("FocusLost", {
 	pattern = "*",
@@ -317,7 +320,15 @@ local plugins = {
 	"tpope/vim-surround",
 	"tpope/vim-commentary",
 	"tpope/vim-eunuch",
-	"tpope/vim-vinegar",
+	-- "tpope/vim-vinegar",
+	{
+		"stevearc/oil.nvim",
+		opts = {
+			columns = {},
+		},
+		-- Optional dependencies
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+	},
 	"tpope/vim-dotenv",
 	"tpope/vim-dispatch",
 	"tpope/vim-projectionist",
@@ -511,8 +522,17 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 	vim.keymap.set("n", "<2-LeftMouse>", vim.lsp.buf.definition, opts)
 
-	vim.keymap.set("n", "#", function() vim.lsp.buf.format({ timeout_ms = 3000 }) end, opts)
-	vim.keymap.set("v", "#", function() vim.lsp.buf.format({ timeout_ms = 3000 }) end, opts)
+	local format_fn = function ()
+		vim.lsp.buf.format({
+		  bufnr = bufnr,
+		  filter = function(formatter_client)
+			  return formatter_client.name == "null-ls"
+		  end,
+		  timeout_ms = 3000,
+		})
+	end
+	vim.keymap.set("n", "#", format_fn, opts)
+	vim.keymap.set("v", "#", format_fn, opts)
 end
 
 require("mason").setup()
