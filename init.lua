@@ -96,9 +96,9 @@ local gitsigns_opts = {
 		row = 0,
 		col = 1,
 	},
-	yadm = {
-		enable = false,
-	},
+	-- yadm = {
+	-- 	enable = false,
+	-- },
 }
 
 ----------------------------------------
@@ -295,12 +295,18 @@ local plugins = {
 
 			null_ls.setup({
 				sources = {
-					-- null_ls.builtins.formatting.stylua,
-					-- null_ls.builtins.diagnostics.eslint,
+					-- TypeScript
 					null_ls.builtins.formatting.prettier,
+					-- Python
 					null_ls.builtins.formatting.isort,
 					null_ls.builtins.formatting.black,
+					-- OCaml
 					null_ls.builtins.formatting.ocamlformat,
+					-- Lua
+					null_ls.builtins.formatting.stylua,
+					-- Nix
+					null_ls.builtins.code_actions.statix,
+					null_ls.builtins.diagnostics.deadnix,
 				},
 			})
 		end,
