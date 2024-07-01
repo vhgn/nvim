@@ -592,6 +592,19 @@ require("mason-lspconfig").setup_handlers({
 			}
 		}
 	end,
+	["tsserver"] = function()
+		local lspconfig = require("lspconfig")
+		lspconfig.tsserver.setup {
+			init_options = {
+				preferences = {
+					importModuleSpecifierPreference = 'relative',
+					importModuleSpecifierEnding = 'minimal',
+				}
+			}
+		}
+
+
+	end,
 })
 
 
