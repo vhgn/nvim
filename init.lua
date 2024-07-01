@@ -27,7 +27,9 @@ local function treesitter_config()
 	local configs = require("nvim-treesitter.configs")
 
 	configs.setup({
-		ensured_installed = {
+		modules = {},
+		ignore_install = {},
+		ensure_installed = {
 			"bash",
 			"comment",
 			"css",
@@ -380,13 +382,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup(plugins)
 
-require("nvim-treesitter.configs").setup({
-	highlight = {
-		enable = true,
-		additional_vim_regex_highlighting = false,
-	},
-})
-
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "zf", builtin.find_files, {})
 vim.keymap.set("n", "zg", builtin.live_grep, {})
@@ -497,11 +492,6 @@ cmp.setup.cmdline({ "/", "?" }, {
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-local opts = { noremap = true, silent = true }
-vim.keymap.set("n", "[D", vim.diagnostic.open_float, opts)
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-
 local on_attach = function(client, bufnr)
 	-- Change later
 	-- See `:help vim.lsp.*` for documentation on any of the below functions
@@ -521,6 +511,10 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 	vim.keymap.set("n", "<2-LeftMouse>", vim.lsp.buf.definition, opts)
 
+	vim.keymap.set("n", "[D", vim.diagnostic.open_float, opts)
+	vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+	vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+
 	local format_fn = function()
 		vim.lsp.buf.format({
 			bufnr = bufnr,
@@ -536,11 +530,13 @@ end
 
 require("mason").setup()
 require("mason-nvim-dap").setup({
-	ensure_installed = { "python", "delve" },
+	automatic_installation = false,
+	ensure_installed = { "python" },
 	handlers = {},
 })
 
-local dap = require("dap")
+-- local dap = require("dap")
+
 vim.cmd([[highlight DapBreakpoint ctermbg=0 guifg=0 guibg=#002200]])
 vim.cmd([[highlight DapLogPoint ctermbg=0 guifg=0 guibg=#000022]])
 vim.cmd([[highlight DapStopped ctermbg=0 guifg=0 guibg=#220000]])
@@ -560,17 +556,17 @@ vim.fn.sign_define(
 vim.fn.sign_define("DapLogPoint", { text = "L", texthl = "DapLogPoint", linehl = "DapLogPoint", numhl = "DapLogPoint" })
 vim.fn.sign_define("DapStopped", { text = "S", texthl = "DapStopped", linehl = "DapStopped", numhl = "DapStopped" })
 
-dap.configurations.python = {
-	{
-		type = "python",
-		request = "launch",
-		name = "Launch file",
-		program = "${file}",
-		pythonPath = function()
-			return "/opt/homebrew/bin/python3"
-		end,
-	},
-}
+-- dap.configurations.python = {
+-- 	{
+-- 		type = "python",
+-- 		request = "launch",
+-- 		name = "Launch file",
+-- 		program = "${file}",
+-- 		pythonPath = function()
+-- 			return "/opt/homebrew/bin/python3"
+-- 		end,
+-- 	},
+-- }
 -- require("dapui").setup()
 
 require("mason-lspconfig").setup()
@@ -611,8 +607,7 @@ require("mason-lspconfig").setup_handlers({
 		})
 	end,
 	["tsserver"] = function()
-		local lspconfig = require("lspconfig")
-		lspconfig.tsserver.setup({
+		require("lspconfig").tsserver.setup({
 			init_options = {
 				preferences = {
 					importModuleSpecifierPreference = "relative",
