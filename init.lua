@@ -209,8 +209,8 @@ end
 
 vim.o.autoread = true
 vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGained" }, {
-  command = "if mode() != 'c' | checktime | endif",
-  pattern = { "*" },
+	command = "if mode() != 'c' | checktime | endif",
+	pattern = { "*" },
 })
 
 vim.opt.showmode = false
@@ -314,7 +314,7 @@ local plugins = {
 	"j-hui/fidget.nvim",
 
 	-- version control
-	{ "lewis6991/gitsigns.nvim",       opts = gitsigns_opts },
+	{ "lewis6991/gitsigns.nvim", opts = gitsigns_opts },
 	"tpope/vim-fugitive",
 
 	-- navigation
@@ -327,15 +327,7 @@ local plugins = {
 	"tpope/vim-surround",
 	"tpope/vim-commentary",
 	"tpope/vim-eunuch",
-	-- "tpope/vim-vinegar",
-	{
-		"stevearc/oil.nvim",
-		opts = {
-			columns = {},
-		},
-		-- Optional dependencies
-		dependencies = { "nvim-tree/nvim-web-devicons" },
-	},
+	"tpope/vim-vinegar",
 	"tpope/vim-dotenv",
 	"tpope/vim-dispatch",
 	"tpope/vim-projectionist",
@@ -529,13 +521,13 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 	vim.keymap.set("n", "<2-LeftMouse>", vim.lsp.buf.definition, opts)
 
-	local format_fn = function ()
+	local format_fn = function()
 		vim.lsp.buf.format({
-		  bufnr = bufnr,
-		  filter = function(formatter_client)
-			  return formatter_client.name == "null-ls"
-		  end,
-		  timeout_ms = 3000,
+			bufnr = bufnr,
+			filter = function(formatter_client)
+				return formatter_client.name == "null-ls"
+			end,
+			timeout_ms = 3000,
 		})
 	end
 	vim.keymap.set("n", "#", format_fn, opts)
@@ -544,31 +536,40 @@ end
 
 require("mason").setup()
 require("mason-nvim-dap").setup({
-    ensure_installed = { "python", "delve" },
+	ensure_installed = { "python", "delve" },
 	handlers = {},
 })
 
 local dap = require("dap")
-vim.cmd[[highlight DapBreakpoint ctermbg=0 guifg=0 guibg=#002200]]
-vim.cmd[[highlight DapLogPoint ctermbg=0 guifg=0 guibg=#000022]]
-vim.cmd[[highlight DapStopped ctermbg=0 guifg=0 guibg=#220000]]
+vim.cmd([[highlight DapBreakpoint ctermbg=0 guifg=0 guibg=#002200]])
+vim.cmd([[highlight DapLogPoint ctermbg=0 guifg=0 guibg=#000022]])
+vim.cmd([[highlight DapStopped ctermbg=0 guifg=0 guibg=#220000]])
 
-vim.fn.sign_define("DapBreakpoint", { text=">", texthl="DapBreakpoint", linehl="DapBreakpoint", numhl="DapBreakpoint" })
-vim.fn.sign_define("DapBreakpointCondition", { text="=", texthl="DapBreakpoint", linehl="DapBreakpoint", numhl="DapBreakpoint" })
-vim.fn.sign_define("DapBreakpointRejected", { text="!", texthl="DapBreakpoint", linehl="DapBreakpoint", numhl= "DapBreakpoint" })
-vim.fn.sign_define("DapLogPoint", { text="L", texthl="DapLogPoint", linehl="DapLogPoint", numhl= "DapLogPoint" })
-vim.fn.sign_define("DapStopped", { text="S", texthl="DapStopped", linehl="DapStopped", numhl= "DapStopped" })
+vim.fn.sign_define(
+	"DapBreakpoint",
+	{ text = ">", texthl = "DapBreakpoint", linehl = "DapBreakpoint", numhl = "DapBreakpoint" }
+)
+vim.fn.sign_define(
+	"DapBreakpointCondition",
+	{ text = "=", texthl = "DapBreakpoint", linehl = "DapBreakpoint", numhl = "DapBreakpoint" }
+)
+vim.fn.sign_define(
+	"DapBreakpointRejected",
+	{ text = "!", texthl = "DapBreakpoint", linehl = "DapBreakpoint", numhl = "DapBreakpoint" }
+)
+vim.fn.sign_define("DapLogPoint", { text = "L", texthl = "DapLogPoint", linehl = "DapLogPoint", numhl = "DapLogPoint" })
+vim.fn.sign_define("DapStopped", { text = "S", texthl = "DapStopped", linehl = "DapStopped", numhl = "DapStopped" })
 
 dap.configurations.python = {
-  {
-	type = "python";
-	request = "launch";
-	name = "Launch file";
-	program = "${file}";
-	pythonPath = function()
-	  return "/opt/homebrew/bin/python3"
-	end;
-  },
+	{
+		type = "python",
+		request = "launch",
+		name = "Launch file",
+		program = "${file}",
+		pythonPath = function()
+			return "/opt/homebrew/bin/python3"
+		end,
+	},
 }
 -- require("dapui").setup()
 
@@ -581,65 +582,71 @@ require("mason-lspconfig").setup_handlers({
 		})
 	end,
 	["lua_ls"] = function()
-		local lspconfig = require("lspconfig")
-		lspconfig.lua_ls.setup {
+		require("lspconfig").lua_ls.setup({
+			on_attach = on_attach,
+			capabilities = capabilities,
 			settings = {
 				Lua = {
+					runtime = { version = "LuaJIT" },
+					telemetry = { enable = false },
 					diagnostics = {
-						globals = { "vim" }
-					}
-				}
-			}
-		}
+						globals = { "vim", "require", "pcall", "pairs" },
+					},
+					workspace = {
+						library = vim.api.nvim_get_runtime_file("", true),
+						checkThirdParty = false,
+					},
+					completion = {
+						workspaceWord = true,
+						callSnippet = "Replace",
+					},
+					hint = {
+						enable = true,
+					},
+					format = {
+						enable = false,
+					},
+				},
+			},
+		})
 	end,
 	["tsserver"] = function()
 		local lspconfig = require("lspconfig")
-		lspconfig.tsserver.setup {
+		lspconfig.tsserver.setup({
 			init_options = {
 				preferences = {
-					importModuleSpecifierPreference = 'relative',
-					importModuleSpecifierEnding = 'minimal',
-				}
-			}
-		}
-
-
+					importModuleSpecifierPreference = "relative",
+					importModuleSpecifierEnding = "minimal",
+				},
+			},
+		})
 	end,
-})
-
-
-require"lspconfig".dartls.setup{
-	cmd = { "dart", "language-server", "--protocol=lsp" },
-	on_attach = on_attach,
-	capabilities = capabilities,
-	filetypes = {
-		"dart",
-	},
-}
-
-require("lspconfig").tailwindcss.setup({
-	on_attach = on_attach,
-	capabilities = capabilities,
-	filetypes = {
-		"html",
-		"css",
-		"scss",
-		"javascript",
-		"javascriptreact",
-		"typescript",
-		"typescriptreact",
-		"rust",
-		"heex",
-		"eelixir",
-		"elixir",
-	},
-	init_options = {
-		userLanguages = {
-			elixir = "html-eex",
-			eelixir = "html-eex",
-			heex = "html-eex",
-		},
-	},
+	["tailwindcss"] = function()
+		require("lspconfig").tailwindcss.setup({
+			on_attach = on_attach,
+			capabilities = capabilities,
+			filetypes = {
+				"html",
+				"css",
+				"scss",
+				"javascript",
+				"javascriptreact",
+				"typescript",
+				"typescriptreact",
+				"rust",
+				"heex",
+				"eelixir",
+				"elixir",
+			},
+			init_options = {
+				userLanguages = {
+					elixir = "html-eex",
+					eelixir = "html-eex",
+					heex = "html-eex",
+				},
+			},
+		})
+	end,
 })
 
 vim.fn.sign_define("DiagnosticSignError", { text = "e", texthl = "DiagnosticSignError", numhl = "DiagnosticSignError" })
@@ -651,7 +658,7 @@ vim.diagnostic.config({
 	virtual_text = { prefix = "", spacing = 10 },
 	severity_sort = true,
 	float = {
-		source = "always",
+		source = "if_many",
 	},
 })
 
@@ -667,4 +674,5 @@ vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.s
 })
 
 vim.diagnostic.config({
-	float = { border = _border }, })
+	float = { border = "rounded" },
+})
