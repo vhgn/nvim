@@ -254,9 +254,6 @@ vim.keymap.set("n", "zj", ":cnext<CR>", { silent = true })
 vim.keymap.set("n", "zk", ":cprev<CR>", { silent = true })
 vim.keymap.set("n", "zl", ":cclose<CR>", { silent = true })
 
--- File Explorer
-vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
-
 -- Autosave on fucus lost
 vim.api.nvim_create_autocmd("FocusLost", {
 	pattern = "*",
