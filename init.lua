@@ -1,8 +1,8 @@
 ----------------------------------------
 -- Random
 ----------------------------------------
-vim.keymap.set("n", "<BS><BS>", ":below G<CR>")
-vim.keymap.set("v", "<BS><BS>", ":below G<CR>")
+vim.keymap.set("n", "<BS><BS>", ":G<CR>")
+vim.keymap.set("v", "<BS><BS>", ":G<CR>")
 
 vim.keymap.set("n", "<BS>f", ":diffget //2<CR>")
 vim.keymap.set("v", "<BS>f", ":diffget //2<CR>")
@@ -70,6 +70,14 @@ local gitsigns_opts = {
 		topdelete = { text = "X" },
 		changedelete = { text = "~" },
 		untracked = { text = "*" },
+	},
+	signs_staged = {
+		add = { text = "[" },
+		change = { text = "[" },
+		delete = { text = "[" },
+		topdelete = { text = "[" },
+		changedelete = { text = "[" },
+		untracked = { text = "[" },
 	},
 	signcolumn = true,
 	numhl = false,
@@ -387,6 +395,8 @@ vim.keymap.set("n", "zx", builtin.commands, {})
 vim.keymap.set("n", "zs", builtin.lsp_dynamic_workspace_symbols, {})
 vim.keymap.set("n", "zb", builtin.git_branches, {})
 vim.keymap.set("n", "zc", builtin.current_buffer_fuzzy_find, {})
+-- Visual mode alternatives
+vim.keymap.set("v", "zg", "\"zy:Telescope live_grep default_text=<C-r>z<cr>", {})
 
 local harpoon_ui = require("harpoon.ui")
 local harpoon_mark = require("harpoon.mark")
