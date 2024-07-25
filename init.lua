@@ -1,8 +1,8 @@
 ----------------------------------------
 -- Random
 ----------------------------------------
-vim.keymap.set("n", "<BS><BS>", ":G<CR>")
-vim.keymap.set("v", "<BS><BS>", ":G<CR>")
+vim.keymap.set("n", "<BS><BS>", ":below G<CR>")
+vim.keymap.set("v", "<BS><BS>", ":below G<CR>")
 
 vim.keymap.set("n", "<BS>f", ":diffget //2<CR>")
 vim.keymap.set("v", "<BS>f", ":diffget //2<CR>")
