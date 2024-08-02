@@ -396,7 +396,7 @@ vim.keymap.set("n", "zs", builtin.lsp_dynamic_workspace_symbols, {})
 vim.keymap.set("n", "zb", builtin.git_branches, {})
 vim.keymap.set("n", "zc", builtin.current_buffer_fuzzy_find, {})
 -- Visual mode alternatives
-vim.keymap.set("v", "zg", "\"zy:Telescope live_grep default_text=<C-r>z<cr>", {})
+vim.keymap.set("v", "zg", '"zy:Telescope live_grep default_text=<C-r>z<cr>', {})
 
 local harpoon_ui = require("harpoon.ui")
 local harpoon_mark = require("harpoon.mark")
@@ -499,7 +499,7 @@ cmp.setup.cmdline({ "/", "?" }, {
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-local on_attach = function(client, bufnr)
+local on_attach = function(_, bufnr)
 	-- Change later
 	-- See `:help vim.lsp.*` for documentation on any of the below functions
 	local opts = { noremap = true, silent = false, buffer = bufnr }
@@ -576,6 +576,16 @@ vim.fn.sign_define("DapStopped", { text = "S", texthl = "DapStopped", linehl = "
 -- }
 -- require("dapui").setup()
 
+local function file_exists(name)
+	local f = io.open(name, "r")
+	if f ~= nil then
+		io.close(f)
+		return true
+	else
+		return false
+	end
+end
+
 require("mason-lspconfig").setup()
 require("mason-lspconfig").setup_handlers({
 	function(server_name)
@@ -614,13 +624,19 @@ require("mason-lspconfig").setup_handlers({
 		})
 	end,
 	["tsserver"] = function()
-		require("lspconfig").tsserver.setup({
-			init_options = {
-				preferences = {
-					importModuleSpecifierPreference = "relative",
-					importModuleSpecifierEnding = "minimal",
-				},
+		local init_options = {
+			preferences = {
+				importModuleSpecifierPreference = "relative",
+				importModuleSpecifierEnding = "minimal",
 			},
+		}
+
+		if file_exists("tsserverconfig.lua") then
+			init_options = require("tsserverconfig")
+		end
+
+		require("lspconfig").tsserver.setup({
+			init_options = init_options,
 		})
 	end,
 	["tailwindcss"] = function()
