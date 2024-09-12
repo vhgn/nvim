@@ -10,16 +10,15 @@ vim.keymap.set("n", "<BS>j", ":diffget //3<CR>")
 vim.keymap.set("v", "<BS>j", ":diffget //3<CR>")
 
 vim.keymap.set("v", "<C-y>", '"*y')
-vim.keymap.set("n", "<C-y>", 'y"*y')
 
 vim.keymap.set("n", "<C-;>", ":noh<CR>")
 vim.keymap.set("n", "<C-'>", ":sp<CR>:term<CR>ipython3<CR>")
 
-vim.filetype.add({
-	extension = {
-		livemd = "markdown",
-	},
-})
+-- vim.filetype.add({
+-- 	extension = {
+-- 		livemd = "markdown",
+-- 	},
+-- })
 ----------------------------------------
 -- Treesitter
 ----------------------------------------
@@ -56,6 +55,7 @@ local function treesitter_config()
 			enable = true,
 			additional_vim_regex_highlighting = false,
 		},
+		injection_queries = {},
 	})
 end
 
@@ -285,8 +285,9 @@ local plugins = {
 	-- Neovim autocompletion
 	"folke/neodev.nvim",
 	"mfussenegger/nvim-dap",
-	"rcarriga/nvim-dap-ui",
+	{ "rcarriga/nvim-dap-ui", dependencies = "nvim-neotest/nvim-nio" },
 	"jay-babu/mason-nvim-dap.nvim",
+	"mxsdev/nvim-dap-vscode-js",
 	"aznhe21/actions-preview.nvim",
 
 	{
@@ -314,6 +315,10 @@ local plugins = {
 					-- Nix
 					null_ls.builtins.code_actions.statix,
 					null_ls.builtins.diagnostics.deadnix,
+					-- Golang
+					null_ls.builtins.formatting.gofmt,
+					-- Gleam
+					null_ls.builtins.formatting.gleam_format,
 				},
 			})
 		end,
@@ -542,8 +547,6 @@ require("mason-nvim-dap").setup({
 	handlers = {},
 })
 
--- local dap = require("dap")
-
 vim.cmd([[highlight DapBreakpoint ctermbg=0 guifg=0 guibg=#002200]])
 vim.cmd([[highlight DapLogPoint ctermbg=0 guifg=0 guibg=#000022]])
 vim.cmd([[highlight DapStopped ctermbg=0 guifg=0 guibg=#220000]])
@@ -563,18 +566,59 @@ vim.fn.sign_define(
 vim.fn.sign_define("DapLogPoint", { text = "L", texthl = "DapLogPoint", linehl = "DapLogPoint", numhl = "DapLogPoint" })
 vim.fn.sign_define("DapStopped", { text = "S", texthl = "DapStopped", linehl = "DapStopped", numhl = "DapStopped" })
 
--- dap.configurations.python = {
--- 	{
--- 		type = "python",
--- 		request = "launch",
--- 		name = "Launch file",
--- 		program = "${file}",
--- 		pythonPath = function()
--- 			return "/opt/homebrew/bin/python3"
--- 		end,
--- 	},
--- }
--- require("dapui").setup()
+local dap = require("dap")
+
+require("dap-vscode-js").setup({
+	adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal", "pwa-extensionHost" },
+	debugger_path = vim.fn.expand("~/Others/vscode-js-debug"),
+})
+
+---@diagnostic disable-next-line: undefined-field
+dap.configurations.typescript = {
+	{
+		type = "pwa-node",
+		request = "launch",
+		name = "Debug Jest Tests",
+		-- trace = true, -- include debugger info
+		runtimeExecutable = "node",
+		runtimeArgs = {
+			"./node_modules/jest/bin/jest.js",
+			"--runInBand",
+		},
+		rootPath = "${workspaceFolder}",
+		cwd = "${workspaceFolder}",
+		console = "integratedTerminal",
+		internalConsoleOptions = "neverOpen",
+	},
+	{
+		type = "pwa-node",
+		request = "launch",
+		name = "Launch file",
+		program = "${file}",
+		cwd = "${workspaceFolder}",
+	},
+	{
+		type = "pwa-node",
+		request = "attach",
+		name = "Attach",
+		processId = require("dap.utils").pick_process,
+		cwd = "${workspaceFolder}",
+	},
+}
+
+---@diagnostic disable-next-line: undefined-field
+dap.configurations.python = {
+	{
+		type = "python",
+		request = "launch",
+		name = "Launch file",
+		program = "${file}",
+		pythonPath = function()
+			return "/opt/homebrew/bin/python3"
+		end,
+	},
+}
+require("dapui").setup()
 
 local function file_exists(name)
 	local f = io.open(name, "r")
@@ -666,6 +710,7 @@ require("mason-lspconfig").setup_handlers({
 		})
 	end,
 })
+require("lspconfig").gleam.setup({ on_attach = on_attach, capabilities = capabilities })
 
 vim.fn.sign_define("DiagnosticSignError", { text = "e", texthl = "DiagnosticSignError", numhl = "DiagnosticSignError" })
 vim.fn.sign_define("DiagnosticSignWarn", { text = "w", texthl = "DiagnosticSignWarn", numhl = "DiagnosticSignWarn" })
