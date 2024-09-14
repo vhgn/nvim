@@ -14,11 +14,58 @@ vim.keymap.set("v", "<C-y>", '"*y')
 vim.keymap.set("n", "<C-;>", ":noh<CR>")
 vim.keymap.set("n", "<C-'>", ":sp<CR>:term<CR>ipython3<CR>")
 
--- vim.filetype.add({
--- 	extension = {
--- 		livemd = "markdown",
--- 	},
--- })
+vim.filetype.add({
+	extension = {
+		livemd = "markdown",
+	},
+})
+
+
+----------------------------------------
+-- Python notebooks
+----------------------------------------
+
+--- TODO
+
+----------------------------------------
+-- Terminal
+----------------------------------------
+local function imagenvim_config()
+	require("image").setup({
+		backend = "kitty",
+		integrations = {
+			markdown = {
+				enabled = true,
+				clear_in_insert_mode = false,
+				download_remote_images = true,
+				only_render_image_at_cursor = false,
+				filetypes = { "markdown", "vimwiki", "livemd", "quarto" },
+			},
+			neorg = {
+				enabled = true,
+				clear_in_insert_mode = false,
+				download_remote_images = true,
+				only_render_image_at_cursor = false,
+				filetypes = { "norg" },
+			},
+			html = {
+				enabled = false,
+			},
+			css = {
+				enabled = false,
+			},
+		},
+		max_width = nil,
+		max_height = nil,
+		max_width_window_percentage = 80,
+		max_height_window_percentage = 80,
+		window_overlap_clear_enabled = false, -- toggles images when windows are overlapped
+		window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+		editor_only_render_when_focused = false, -- auto show/hide images when the editor gains/looses focus
+		tmux_show_only_in_active_window = false, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
+		hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" }, -- render image files as images when opened
+	})
+end
 ----------------------------------------
 -- Treesitter
 ----------------------------------------
@@ -59,6 +106,15 @@ local function treesitter_config()
 	})
 end
 
+local function otter_config()
+	local otter = require("otter")
+	otter.setup({
+		verbose = {
+			no_code_found = false,
+		},
+	})
+	otter.activate()
+end
 ----------------------------------------
 -- GitSigns
 ----------------------------------------
@@ -272,6 +328,15 @@ vim.api.nvim_create_autocmd("FocusLost", {
 -- Plugins
 --------------------------------------
 local plugins = {
+	-- Others
+	{
+		"vhyrro/luarocks.nvim",
+		priority = 1001, -- this plugin needs to run before anything else
+		opts = {
+			rocks = { "magick" },
+		},
+	},
+
 	"williamboman/mason.nvim",
 	"williamboman/mason-lspconfig.nvim",
 	"neovim/nvim-lspconfig",
@@ -352,7 +417,7 @@ local plugins = {
 	{
 		"kristijanhusak/vim-dadbod-ui",
 		dependencies = {
-			-- { 'tpope/vim-dadbod',                     lazy = true },
+			{ "tpope/vim-dadbod", lazy = true },
 			{ "kristijanhusak/vim-dadbod-completion", ft = { "sql", "mysql", "plsql" }, lazy = true },
 		},
 		cmd = {
@@ -366,10 +431,32 @@ local plugins = {
 			vim.g.db_ui_use_nerd_fonts = 1
 		end,
 	},
+	{
+		"benlubas/molten-nvim",
+		version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
+		dependencies = { "3rd/image.nvim" },
+		build = ":UpdateRemotePlugins",
+		init = function()
+			-- these are examples, not defaults. Please see the readme
+			vim.g.molten_image_provider = "image.nvim"
+			vim.g.molten_output_win_max_height = 20
+		end,
+	},
+	{
+		"3rd/image.nvim",
+		config = imagenvim_config,
+	},
 
 	-- languages
 	{ "nvim-treesitter/nvim-treesitter", config = treesitter_config, build = ":TSUpdate" },
 	"nvim-treesitter/nvim-treesitter-context",
+	{
+		"jmbuhr/otter.nvim",
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter",
+		},
+		config = otter_config,
+	},
 
 	-- color theme
 	{ "bluz71/vim-moonfly-colors", init = moonfly_init, name = "moonfly", lazy = false, priority = 1000 },
@@ -402,6 +489,7 @@ vim.keymap.set("n", "zb", builtin.git_branches, {})
 vim.keymap.set("n", "zc", builtin.current_buffer_fuzzy_find, {})
 -- Visual mode alternatives
 vim.keymap.set("v", "zg", '"zy:Telescope live_grep default_text=<C-r>z<cr>', {})
+vim.keymap.set("v", "zx", builtin.commands, {})
 
 local harpoon_ui = require("harpoon.ui")
 local harpoon_mark = require("harpoon.mark")
