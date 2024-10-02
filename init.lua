@@ -1,6 +1,8 @@
 ----------------------------------------
 -- Random
 ----------------------------------------
+vim.g.mapleader = "'"
+
 vim.keymap.set("n", "<BS><BS>", ":below G<CR>")
 vim.keymap.set("v", "<BS><BS>", ":below G<CR>")
 
@@ -20,12 +22,21 @@ vim.filetype.add({
 	},
 })
 
-
 ----------------------------------------
 -- Python notebooks
 ----------------------------------------
 
 --- TODO
+
+local function otter_config()
+	-- local otter = require("otter")
+	-- otter.setup({
+	-- 	verbose = {
+	-- 		no_code_found = false,
+	-- 	},
+	-- })
+	-- otter.activate()
+end
 
 ----------------------------------------
 -- Terminal
@@ -106,15 +117,6 @@ local function treesitter_config()
 	})
 end
 
-local function otter_config()
-	local otter = require("otter")
-	otter.setup({
-		verbose = {
-			no_code_found = false,
-		},
-	})
-	otter.activate()
-end
 ----------------------------------------
 -- GitSigns
 ----------------------------------------
@@ -282,8 +284,6 @@ vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGai
 vim.opt.showmode = false
 vim.opt.scrolloff = 8
 
-vim.g.mapleader = " "
-
 vim.opt.number = true
 vim.opt.relativenumber = true
 
@@ -333,7 +333,7 @@ local plugins = {
 		"vhyrro/luarocks.nvim",
 		priority = 1001, -- this plugin needs to run before anything else
 		opts = {
-			rocks = { "magick" },
+			rocks = { "magick", "lua-cjson" },
 		},
 	},
 
@@ -615,6 +615,8 @@ local on_attach = function(_, bufnr)
 	vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
 	vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 
+	vim.keymap.set("n", "<Leader>fm", ":Make! format<CR>", opts)
+
 	local format_fn = function()
 		vim.lsp.buf.format({
 			bufnr = bufnr,
@@ -656,43 +658,44 @@ vim.fn.sign_define("DapStopped", { text = "S", texthl = "DapStopped", linehl = "
 
 local dap = require("dap")
 
+---@diagnostic disable-next-line: missing-fields
 require("dap-vscode-js").setup({
 	adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal", "pwa-extensionHost" },
 	debugger_path = vim.fn.expand("~/Others/vscode-js-debug"),
 })
 
 ---@diagnostic disable-next-line: undefined-field
-dap.configurations.typescript = {
-	{
-		type = "pwa-node",
-		request = "launch",
-		name = "Debug Jest Tests",
-		-- trace = true, -- include debugger info
-		runtimeExecutable = "node",
-		runtimeArgs = {
-			"./node_modules/jest/bin/jest.js",
-			"--runInBand",
-		},
-		rootPath = "${workspaceFolder}",
-		cwd = "${workspaceFolder}",
-		console = "integratedTerminal",
-		internalConsoleOptions = "neverOpen",
-	},
-	{
-		type = "pwa-node",
-		request = "launch",
-		name = "Launch file",
-		program = "${file}",
-		cwd = "${workspaceFolder}",
-	},
-	{
-		type = "pwa-node",
-		request = "attach",
-		name = "Attach",
-		processId = require("dap.utils").pick_process,
-		cwd = "${workspaceFolder}",
-	},
-}
+-- dap.configurations.typescript = {
+-- 	{
+-- 		type = "pwa-node",
+-- 		request = "launch",
+-- 		name = "Debug Jest Tests",
+-- 		-- trace = true, -- include debugger info
+-- 		runtimeExecutable = "node",
+-- 		runtimeArgs = {
+-- 			"./node_modules/jest/bin/jest.js",
+-- 			"--runInBand",
+-- 		},
+-- 		rootPath = "${workspaceFolder}",
+-- 		cwd = "${workspaceFolder}",
+-- 		console = "integratedTerminal",
+-- 		internalConsoleOptions = "neverOpen",
+-- 	},
+-- 	{
+-- 		type = "pwa-node",
+-- 		request = "launch",
+-- 		name = "Launch file",
+-- 		program = "${file}",
+-- 		cwd = "${workspaceFolder}",
+-- 	},
+-- 	{
+-- 		type = "pwa-node",
+-- 		request = "attach",
+-- 		name = "Attach",
+-- 		processId = require("dap.utils").pick_process,
+-- 		cwd = "${workspaceFolder}",
+-- 	},
+-- }
 
 ---@diagnostic disable-next-line: undefined-field
 dap.configurations.python = {
@@ -706,7 +709,22 @@ dap.configurations.python = {
 		end,
 	},
 }
-require("dapui").setup()
+local dapui = require("dapui")
+dapui.setup()
+
+-- Auto open and close on debugger attached
+-- dap.listeners.before.attach.dapui_config = function()
+-- 	dapui.open()
+-- end
+-- dap.listeners.before.launch.dapui_config = function()
+-- 	dapui.open()
+-- end
+-- dap.listeners.before.event_terminated.dapui_config = function()
+-- 	dapui.close()
+-- end
+-- dap.listeners.before.event_exited.dapui_config = function()
+-- 	dapui.close()
+-- end
 
 local function file_exists(name)
 	local f = io.open(name, "r")
@@ -717,6 +735,32 @@ local function file_exists(name)
 		return false
 	end
 end
+
+vim.keymap.set("n", "<Leader>db", function()
+	require("dap").toggle_breakpoint()
+end)
+vim.keymap.set("n", "<Leader>dr", function()
+	require("dap.repl").open()
+end)
+vim.keymap.set("n", "<Leader>dl", function()
+	require("dap").run_last()
+end)
+vim.keymap.set("n", "<Leader>dc", function()
+	require("dap").continue()
+end)
+vim.keymap.set("n", "<Leader>ds", function()
+	require("dap").disconnect({ terminateDebuggee = true })
+	require("dap").close()
+end)
+vim.keymap.set("n", "<Leader>du", function()
+	require("dapui").toggle()
+end)
+vim.keymap.set({ "n", "v" }, "<Leader>dh", function()
+	require("dap.ui.widgets").hover()
+end)
+vim.keymap.set("n", "<Leader>dp", function()
+	require("dap.ui.widgets").preview()
+end)
 
 require("mason-lspconfig").setup()
 require("mason-lspconfig").setup_handlers({
@@ -768,6 +812,8 @@ require("mason-lspconfig").setup_handlers({
 		end
 
 		require("lspconfig").tsserver.setup({
+			on_attach = on_attach,
+			capabilities = capabilities,
 			init_options = init_options,
 		})
 	end,
