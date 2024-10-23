@@ -1,6 +1,11 @@
 ----------------------------------------
 -- Random
 ----------------------------------------
+
+-- Per project vimrc
+vim.cmd([[set exrc]])
+vim.cmd([[set secure]])
+
 vim.g.mapleader = "'"
 
 vim.keymap.set("n", "<BS><BS>", ":below G<CR>")
@@ -15,6 +20,8 @@ vim.keymap.set("v", "<C-y>", '"*y')
 
 vim.keymap.set("n", "<C-;>", ":noh<CR>")
 vim.keymap.set("n", "<C-'>", ":sp<CR>:term<CR>ipython3<CR>")
+
+vim.keymap.set("n", "<Leader>fm", ":Make!<CR>")
 
 vim.filetype.add({
 	extension = {
@@ -479,9 +486,43 @@ end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup(plugins)
 
+----------------------------------------
+-- Telescope
+----------------------------------------
 local builtin = require("telescope.builtin")
+local config = require("telescope.config")
+
+local quickfix_files = function()
+	local qflist = vim.fn.getqflist()
+	local files = {}
+	local seen = {}
+	for k in pairs(qflist) do
+		local path = vim.fn.bufname(qflist[k]["bufnr"])
+		if not seen[path] then
+			files[#files + 1] = path
+			seen[path] = true
+		end
+	end
+	table.sort(files)
+	return files
+end
+
+local grep_on_quickfix = function()
+	local args = {}
+
+	for i, v in ipairs(config.values.vimgrep_arguments) do
+		args[#args + 1] = v
+	end
+	for i, v in ipairs(quickfix_files()) do
+		args[#args + 1] = "-g/" .. v
+	end
+
+	builtin.live_grep({ vimgrep_arguments = args })
+end
+
 vim.keymap.set("n", "zf", builtin.find_files, {})
 vim.keymap.set("n", "zg", builtin.live_grep, {})
+vim.keymap.set("n", "zG", grep_on_quickfix, {})
 vim.keymap.set("n", "zd", builtin.quickfix, {})
 vim.keymap.set("n", "zx", builtin.commands, {})
 vim.keymap.set("n", "zs", builtin.lsp_dynamic_workspace_symbols, {})
@@ -615,8 +656,6 @@ local on_attach = function(_, bufnr)
 	vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
 	vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 
-	vim.keymap.set("n", "<Leader>fm", ":Make! format<CR>", opts)
-
 	local format_fn = function()
 		vim.lsp.buf.format({
 			bufnr = bufnr,
@@ -637,9 +676,9 @@ require("mason-nvim-dap").setup({
 	handlers = {},
 })
 
-vim.cmd([[highlight DapBreakpoint ctermbg=0 guifg=0 guibg=#002200]])
-vim.cmd([[highlight DapLogPoint ctermbg=0 guifg=0 guibg=#000022]])
-vim.cmd([[highlight DapStopped ctermbg=0 guifg=0 guibg=#220000]])
+vim.cmd([[highlight DapBreakpoint ctermbg=0 guifg=0 guibg=#303659]])
+vim.cmd([[highlight DapLogPoint ctermbg=0 guifg=0 guibg=#355930]])
+vim.cmd([[highlight DapStopped ctermbg=0 guifg=0 guibg=#593430]])
 
 vim.fn.sign_define(
 	"DapBreakpoint",
@@ -654,7 +693,7 @@ vim.fn.sign_define(
 	{ text = "!", texthl = "DapBreakpoint", linehl = "DapBreakpoint", numhl = "DapBreakpoint" }
 )
 vim.fn.sign_define("DapLogPoint", { text = "L", texthl = "DapLogPoint", linehl = "DapLogPoint", numhl = "DapLogPoint" })
-vim.fn.sign_define("DapStopped", { text = "S", texthl = "DapStopped", linehl = "DapStopped", numhl = "DapStopped" })
+vim.fn.sign_define("DapStopped", { text = "", texthl = "DapStopped", linehl = "DapStopped", numhl = "DapStopped" })
 
 local dap = require("dap")
 
@@ -696,6 +735,11 @@ require("dap-vscode-js").setup({
 -- 		cwd = "${workspaceFolder}",
 -- 	},
 -- }
+-- dap.adapters.chrome = {
+-- 	type = "executable",
+-- 	command = "node",
+-- 	args = { os.getenv("HOME") .. "/Others/vscode-chrome-debug/out/src/chromeDebug.js" },
+-- }
 
 ---@diagnostic disable-next-line: undefined-field
 dap.configurations.python = {
@@ -713,18 +757,18 @@ local dapui = require("dapui")
 dapui.setup()
 
 -- Auto open and close on debugger attached
--- dap.listeners.before.attach.dapui_config = function()
--- 	dapui.open()
--- end
--- dap.listeners.before.launch.dapui_config = function()
--- 	dapui.open()
--- end
--- dap.listeners.before.event_terminated.dapui_config = function()
--- 	dapui.close()
--- end
--- dap.listeners.before.event_exited.dapui_config = function()
--- 	dapui.close()
--- end
+dap.listeners.before.attach.dapui_config = function()
+	dapui.open()
+end
+dap.listeners.before.launch.dapui_config = function()
+	dapui.open()
+end
+dap.listeners.before.event_terminated.dapui_config = function()
+	dapui.close()
+end
+dap.listeners.before.event_exited.dapui_config = function()
+	dapui.close()
+end
 
 local function file_exists(name)
 	local f = io.open(name, "r")
@@ -739,6 +783,15 @@ end
 vim.keymap.set("n", "<Leader>db", function()
 	require("dap").toggle_breakpoint()
 end)
+vim.keymap.set("n", "<Leader>dB", function()
+	require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+end)
+vim.keymap.set("n", "<Leader>dd", function()
+	require("dap").clear_breakpoints()
+end)
+vim.keymap.set("n", "<Leader>de", function()
+	require("dap").set_exception_breakpoints()
+end)
 vim.keymap.set("n", "<Leader>dr", function()
 	require("dap.repl").open()
 end)
@@ -748,9 +801,11 @@ end)
 vim.keymap.set("n", "<Leader>dc", function()
 	require("dap").continue()
 end)
+vim.keymap.set("n", "<Leader>dC", function()
+	require("dap").run_to_cursor()
+end)
 vim.keymap.set("n", "<Leader>ds", function()
-	require("dap").disconnect({ terminateDebuggee = true })
-	require("dap").close()
+	require("dap").terminate()
 end)
 vim.keymap.set("n", "<Leader>du", function()
 	require("dapui").toggle()
@@ -760,6 +815,10 @@ vim.keymap.set({ "n", "v" }, "<Leader>dh", function()
 end)
 vim.keymap.set("n", "<Leader>dp", function()
 	require("dap.ui.widgets").preview()
+end)
+vim.keymap.set("n", "<Leader>dH", function()
+	local widgets = require("dap.ui.widgets")
+	widgets.centered_float(widgets.scopes)
 end)
 
 require("mason-lspconfig").setup()
