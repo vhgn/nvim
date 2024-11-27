@@ -314,7 +314,7 @@ local plugins = {
 	-- navigation
 	{ "nvim-telescope/telescope.nvim", opts = telescope_opts },
 	"ThePrimeagen/harpoon",
-	{ 'bluz71/nvim-linefly' },
+	 "bluz71/nvim-linefly" ,
 
 	"tpope/vim-repeat",
 
