@@ -125,96 +125,6 @@ local function treesitter_config()
 end
 
 ----------------------------------------
--- GitSigns
-----------------------------------------
-local gitsigns_opts = {
-	signs = {
-		add = { text = "+" },
-		change = { text = "~" },
-		delete = { text = "x" },
-		topdelete = { text = "X" },
-		changedelete = { text = "~" },
-		untracked = { text = "*" },
-	},
-	signs_staged = {
-		add = { text = "[" },
-		change = { text = "[" },
-		delete = { text = "[" },
-		topdelete = { text = "[" },
-		changedelete = { text = "[" },
-		untracked = { text = "[" },
-	},
-	signcolumn = true,
-	numhl = false,
-	linehl = false,
-	word_diff = false,
-	watch_gitdir = {
-		follow_files = true,
-	},
-	attach_to_untracked = true,
-	current_line_blame = false,
-	current_line_blame_opts = {
-		virt_text = true,
-		virt_text_pos = "eol",
-		delay = 1000,
-		ignore_whitespace = false,
-	},
-	current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",
-	sign_priority = 6,
-	update_debounce = 100,
-	status_formatter = nil,
-	max_file_length = 40000,
-	preview_config = {
-		border = "single",
-		style = "minimal",
-		relative = "cursor",
-		row = 0,
-		col = 1,
-	},
-	-- yadm = {
-	-- 	enable = false,
-	-- },
-}
-
-----------------------------------------
--- Lualine
-----------------------------------------
-local lualine_opts = {
-	options = {
-		icons_enabled = false,
-		theme = "auto",
-		section_separators = "",
-		component_separators = "/",
-	},
-	sections = {
-		lualine_a = {
-			{
-				"mode",
-				fmt = function(str)
-					return str:sub(1, 1)
-				end,
-			},
-		},
-		lualine_b = {
-			"branch",
-			"diff",
-			"diagnostics",
-		},
-		lualine_c = {
-			{
-				"filename",
-				file_status = true,
-				path = 2,
-			},
-		},
-		lualine_z = {},
-		lualine_y = {},
-		lualine_x = {},
-	},
-	extensions = { "quickfix", "fugitive", "fzf" },
-}
-
-----------------------------------------
 -- Livecommand
 ----------------------------------------
 local function live_command_config()
@@ -378,19 +288,19 @@ local plugins = {
 					-- TypeScript
 					null_ls.builtins.formatting.prettier,
 					-- Python
-					null_ls.builtins.formatting.isort,
-					null_ls.builtins.formatting.black,
-					-- OCaml
-					null_ls.builtins.formatting.ocamlformat,
-					-- Lua
-					null_ls.builtins.formatting.stylua,
-					-- Nix
-					null_ls.builtins.code_actions.statix,
-					null_ls.builtins.diagnostics.deadnix,
-					-- Golang
-					null_ls.builtins.formatting.gofmt,
-					-- Gleam
-					null_ls.builtins.formatting.gleam_format,
+					-- null_ls.builtins.formatting.isort,
+					-- null_ls.builtins.formatting.black,
+					-- -- OCaml
+					-- null_ls.builtins.formatting.ocamlformat,
+					-- -- Lua
+					-- null_ls.builtins.formatting.stylua,
+					-- -- Nix
+					-- null_ls.builtins.code_actions.statix,
+					-- null_ls.builtins.diagnostics.deadnix,
+					-- -- Golang
+					-- null_ls.builtins.formatting.gofmt,
+					-- -- Gleam
+					-- null_ls.builtins.formatting.gleam_format,
 				},
 			})
 		end,
@@ -398,13 +308,14 @@ local plugins = {
 	"j-hui/fidget.nvim",
 
 	-- version control
-	{ "lewis6991/gitsigns.nvim", opts = gitsigns_opts },
+	{ "lewis6991/gitsigns.nvim", opts = {} },
 	"tpope/vim-fugitive",
 
 	-- navigation
 	{ "nvim-telescope/telescope.nvim", opts = telescope_opts },
 	"ThePrimeagen/harpoon",
-	{ "nvim-lualine/lualine.nvim", opts = lualine_opts },
+	{ 'bluz71/nvim-linefly' },
+
 	"tpope/vim-repeat",
 
 	-- shortcuts
@@ -452,6 +363,16 @@ local plugins = {
 	{
 		"3rd/image.nvim",
 		config = imagenvim_config,
+	},
+	{
+		"kopecmaciej/vi-mongo.nvim",
+		config = function()
+			require("vi-mongo").setup()
+		end,
+		cmd = { "ViMongo" },
+		keys = {
+			{ "<leader>vm", "<cmd>ViMongo<cr>", desc = "ViMongo" },
+		},
 	},
 
 	-- languages
