@@ -637,10 +637,12 @@ local on_attach = function(_, bufnr)
 	-- Change later
 	-- See `:help vim.lsp.*` for documentation on any of the below functions
 	local opts = { noremap = true, silent = false, buffer = bufnr }
-	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-	vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-	vim.keymap.set("n", "gh", vim.lsp.buf.signature_help, opts)
-	vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, opts)
+
+	-- Already default
+	-- vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+
+	-- Default is <C-s>
+	-- vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help, opts)
 
 	vim.keymap.set("n", "zq", vim.diagnostic.setqflist, opts)
 
@@ -652,9 +654,10 @@ local on_attach = function(_, bufnr)
 	vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 	vim.keymap.set("n", "<2-LeftMouse>", vim.lsp.buf.definition, opts)
 
-	vim.keymap.set("n", "[D", vim.diagnostic.open_float, opts)
-	vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-	vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+	-- Default is <C-w>d
+	-- vim.keymap.set("n", "[D", vim.diagnostic.open_float, opts)
+	-- vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+	-- vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 
 	local format_fn = function()
 		vim.lsp.buf.format({
