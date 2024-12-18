@@ -77,10 +77,10 @@ local function imagenvim_config()
 		max_height = nil,
 		max_width_window_percentage = 80,
 		max_height_window_percentage = 80,
-		window_overlap_clear_enabled = false, -- toggles images when windows are overlapped
+		window_overlap_clear_enabled = false,                                         -- toggles images when windows are overlapped
 		window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
-		editor_only_render_when_focused = false, -- auto show/hide images when the editor gains/looses focus
-		tmux_show_only_in_active_window = false, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
+		editor_only_render_when_focused = false,                                      -- auto show/hide images when the editor gains/looses focus
+		tmux_show_only_in_active_window = false,                                      -- auto show/hide images in the correct Tmux window (needs visual-activity off)
 		hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" }, -- render image files as images when opened
 	})
 end
@@ -267,7 +267,7 @@ local plugins = {
 	-- Neovim autocompletion
 	"folke/neodev.nvim",
 	"mfussenegger/nvim-dap",
-	{ "rcarriga/nvim-dap-ui", dependencies = "nvim-neotest/nvim-nio" },
+	{ "rcarriga/nvim-dap-ui",    dependencies = "nvim-neotest/nvim-nio" },
 	"jay-babu/mason-nvim-dap.nvim",
 	"mxsdev/nvim-dap-vscode-js",
 	"aznhe21/actions-preview.nvim",
@@ -286,7 +286,7 @@ local plugins = {
 			null_ls.setup({
 				sources = {
 					-- TypeScript
-					null_ls.builtins.formatting.prettier,
+					-- null_ls.builtins.formatting.prettier,
 					-- Python
 					-- null_ls.builtins.formatting.isort,
 					-- null_ls.builtins.formatting.black,
@@ -306,6 +306,16 @@ local plugins = {
 		end,
 	},
 	"j-hui/fidget.nvim",
+	{
+		"0x00-ketsu/maximizer.nvim",
+		config = function()
+			require("maximizer").setup {
+				-- your configuration comes here
+				-- or leave it empty to use the default settings
+				-- refer to the configuration section below
+			}
+		end
+	},
 
 	-- version control
 	{ "lewis6991/gitsigns.nvim", opts = {} },
@@ -314,8 +324,7 @@ local plugins = {
 	-- navigation
 	{ "nvim-telescope/telescope.nvim", opts = telescope_opts },
 	"ThePrimeagen/harpoon",
-	 "bluz71/nvim-linefly" ,
-
+	{ "nvim-lualine/lualine.nvim",     opts = lualine_opts },
 	"tpope/vim-repeat",
 
 	-- shortcuts
@@ -329,13 +338,13 @@ local plugins = {
 	"tpope/vim-dadbod",
 
 	-- tools
-	{ "smjonas/live-command.nvim", config = live_command_config },
+	{ "smjonas/live-command.nvim",       config = live_command_config },
 	"ThePrimeagen/vim-be-good",
 	"nvim-lua/plenary.nvim",
 	{
 		"kristijanhusak/vim-dadbod-ui",
 		dependencies = {
-			{ "tpope/vim-dadbod", lazy = true },
+			{ "tpope/vim-dadbod",                     lazy = true },
 			{ "kristijanhusak/vim-dadbod-completion", ft = { "sql", "mysql", "plsql" }, lazy = true },
 		},
 		cmd = {
@@ -371,12 +380,12 @@ local plugins = {
 		end,
 		cmd = { "ViMongo" },
 		keys = {
-			{ "<leader>vm", "<cmd>ViMongo<cr>", desc = "ViMongo" },
+			{ "<Leader>vm", "<cmd>ViMongo<cr>", desc = "ViMongo" },
 		},
 	},
 
 	-- languages
-	{ "nvim-treesitter/nvim-treesitter", config = treesitter_config, build = ":TSUpdate" },
+	{ "nvim-treesitter/nvim-treesitter", config = treesitter_config,  build = ":TSUpdate" },
 	"nvim-treesitter/nvim-treesitter-context",
 	{
 		"jmbuhr/otter.nvim",
@@ -452,6 +461,10 @@ vim.keymap.set("n", "zc", builtin.current_buffer_fuzzy_find, {})
 -- Visual mode alternatives
 vim.keymap.set("v", "zg", '"zy:Telescope live_grep default_text=<C-r>z<cr>', {})
 vim.keymap.set("v", "zx", builtin.commands, {})
+
+local maximizer = require("maximizer")
+vim.keymap.set("n", "<C-w><C-o>", maximizer.toggle, {})
+vim.keymap.set("v", "<C-w><C-o>", maximizer.toggle, {})
 
 local harpoon_ui = require("harpoon.ui")
 local harpoon_mark = require("harpoon.mark")
@@ -583,9 +596,6 @@ local on_attach = function(_, bufnr)
 	local format_fn = function()
 		vim.lsp.buf.format({
 			bufnr = bufnr,
-			filter = function(formatter_client)
-				return formatter_client.name == "null-ls"
-			end,
 			timeout_ms = 3000,
 		})
 	end
@@ -720,7 +730,7 @@ vim.keymap.set("n", "<Leader>dr", function()
 	require("dap.repl").open()
 end)
 vim.keymap.set("n", "<Leader>dl", function()
-	require("dap").run_last()
+	require("dap").set_breakpoint(nil, nil, vim.fn.input("Log message: "))
 end)
 vim.keymap.set("n", "<Leader>dc", function()
 	require("dap").continue()
@@ -776,7 +786,7 @@ require("mason-lspconfig").setup_handlers({
 						enable = true,
 					},
 					format = {
-						enable = false,
+						enable = true,
 					},
 				},
 			},
@@ -824,6 +834,10 @@ require("mason-lspconfig").setup_handlers({
 					heex = "html-eex",
 				},
 			},
+		})
+	end,
+	["marksman"] = function()
+		require("lspconfig").marksman.setup({
 		})
 	end,
 })
